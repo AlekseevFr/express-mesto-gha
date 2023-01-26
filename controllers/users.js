@@ -10,11 +10,16 @@ const getUser = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+        return res.status(404).send({ message: 'Пользователь не найден' });
       }
       return res.send(user);
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Произошла ошибка' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка' });
+    });
 };
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;

@@ -16,7 +16,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const { PORT = 3000, BASE_PATH } = process.env;
+const { PORT = 27017, BASE_PATH } = process.env;
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
