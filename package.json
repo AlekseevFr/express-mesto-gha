@@ -1,0 +1,37 @@
+{
+  "name": "mesto-react",
+  "version": "0.1.0",
+  "scripts": {
+    "lint": "eslint . --ext js,jsx,ts,tsx --fix",
+    "start": "nodemon app.js"
+  },
+  "devDependencies": {
+    "eslint": "^8.32.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.4",
+    "eslint-plugin-react": "^7.32.0",
+    "lint": "^0.8.19",
+    "nodemon": "^2.0.20"
+  },
+  "description": "[# express-mesto-gha] https://github.com/AlekseevFr/express-mesto-gha.git",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "eslint": "^7.23.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "express": "^4.17.1",
+    "mongoose": "^5.12.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlekseevFr/express-mesto-gha.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlekseevFr/express-mesto-gha/issues"
+  },
+  "homepage": "https://github.com/AlekseevFr/express-mesto-gha#readme"
+}
