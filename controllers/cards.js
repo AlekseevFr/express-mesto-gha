@@ -75,6 +75,7 @@ const dislikeCard = (req, res) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные карточки.' });
       }
+      return res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
 
