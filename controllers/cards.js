@@ -40,10 +40,10 @@ const likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
-    { new: true },
-  ).then((card) => res.send(card))
+    { new: true, runValidators: true },
+  ).then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(400).send({ message: 'Произошла ошибка' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
