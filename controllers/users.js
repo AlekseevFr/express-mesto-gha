@@ -40,13 +40,16 @@ const updateUser = (req, res) => {
   const userInfo = req.body.about;
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { name: userName, about: userInfo }, { new: true })
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send({ message: 'Запрашиваемый пользователь не найден' });
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(400).send({
+          message: 'Ошибка данных',
+        });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' });
       }
-      return res.send(user);
-    })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    });
 };
 
 const updateAvatar = (req, res) => {
