@@ -60,12 +60,18 @@ const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
-    { new: true },
-  ).then((card) => res.send(card))
-    .catch(() => {
-      res.status(500).send({ message: 'Произошла ошибка' });
+    { new: true, runValidators: true },
+  )
+    .orFail()
+    .populate(['owner', 'likes'])
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные карточки.' });
+      }
     });
 };
+
 module.exports = {
   getCards,
   createCard,
