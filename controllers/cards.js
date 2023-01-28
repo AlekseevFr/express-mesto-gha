@@ -43,7 +43,7 @@ const likeCard = (req, res) => {
     { new: true, runValidators: true },
   ).then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Произошла ошибка' });
       }
       return res.status(500).send({ message: 'Произошла ошибка' });
