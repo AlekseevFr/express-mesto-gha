@@ -39,8 +39,12 @@ const updateUser = (req, res) => {
   const userName = req.body.name;
   const userInfo = req.body.about;
   const userId = req.user._id;
-  User.findByIdAndUpdate(userId, { name: userName, about: userInfo }, { new: true })
-    .then((user) => res.send(user))
+  User.findByIdAndUpdate(
+    userId,
+    { name: userName, about: userInfo },
+    { new: true, runValidators: true },
+  )
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(400).send({
