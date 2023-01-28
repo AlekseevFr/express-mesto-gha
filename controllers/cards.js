@@ -64,7 +64,13 @@ const dislikeCard = (req, res) => {
   )
     .orFail()
     .populate(['owner', 'likes'])
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => {
+      if (!card) {
+        return res.status(404).send({ message: 'Запрашиваемая карточка не найдена' });
+      }
+      return res.send(card);
+    })
+
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные карточки.' });
