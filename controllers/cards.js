@@ -42,8 +42,11 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   ).then((card) => res.send(card))
-    .catch(() => {
-      res.status(500).send({ message: 'Произошла ошибка' });
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Произошла ошибка' });
+      }
+      return res.status(500).send({ message: 'Произошла ошибка' });
     });
 };
 const dislikeCard = (req, res) => {
