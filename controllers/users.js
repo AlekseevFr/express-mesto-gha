@@ -46,7 +46,12 @@ const updateUser = (req, res) => {
     { name: userName, about: userInfo },
     { new: true, runValidators: true },
   )
-    .then((user) => res.status(constants.HTTP_STATUS_OK).send({ data: user }))
+    .then((user) => {
+      if (!user) {
+        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
+      }
+      return res.status(constants.HTTP_STATUS_OK).send({ data: user });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
@@ -69,7 +74,7 @@ const updateAvatar = (req, res) => {
       return res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
           message: 'Ошибка данных',
         });

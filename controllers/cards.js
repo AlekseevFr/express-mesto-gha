@@ -3,7 +3,7 @@ const Card = require('../models/card');
 
 const getCards = (req, res) => {
   Card.find({})
-    .populate(['owner'])
+    .populate(['owner', 'likes'])
     .then((cards) => res.send(cards))
     .catch(() => res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 };
@@ -54,9 +54,6 @@ const likeCard = (req, res) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Переданы некорректные данные карточки.' });
-      }
-      if (err.name === 'DocumentNotFoundError') {
-        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Карточка не найдена' });
       }
       return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на сервере.' });
     });

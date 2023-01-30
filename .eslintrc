@@ -4,8 +4,7 @@
     },
     "extends": [
         "airbnb-base",
-        "eslint:recommended",
-        "plugin:react/recommended"
+        "eslint:recommended"
 
     ],
     "overrides": [
@@ -14,9 +13,6 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "plugins": [
-        "react"
-    ],
     "rules": {
       "no-underscore-dangle": ["error", { "allow": ["_id"] }]
     }
