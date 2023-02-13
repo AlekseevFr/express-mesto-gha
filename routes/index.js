@@ -1,3 +1,4 @@
+const express = require('express');
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const users = require('./users');
@@ -5,6 +6,8 @@ const cards = require('./cards');
 const auth = require('../middlewares/auth');
 const { NotFound } = require('../errors/NotFound');
 const { login, createUser } = require('../controllers/users');
+
+router.all('*', express.json());
 
 router.post(
   '/signup',
