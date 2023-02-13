@@ -8,9 +8,9 @@ const { errors } = require('celebrate');
 
 const router = require('./routes');
 
-const app = express();
-
 const { handleError } = require('./middlewares/handleError');
+
+const app = express();
 
 const { PORT = 3000, BASE_PATH } = process.env;
 
@@ -22,7 +22,8 @@ app.listen(PORT, () => {
   console.log('Ссылка на сервер:');
   console.log(BASE_PATH);
 });
-app.use(errors());
+
 app.use(bodyParser.json());
+app.use(errors());
 app.use(router);
 app.use(handleError);
