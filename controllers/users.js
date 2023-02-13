@@ -1,31 +1,49 @@
 const { constants } = require('http2');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { NotFound } = require('../errors/NotFound');
+
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password).select('+password')
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
+      res.status(constants.HTTP_STATUS_OK).send({ token });
+    })
+
+    .catch((err) => {
+      next(err);
+    });
+};
 
 const getUsers = (req, res) => {
   User.find()
     .then((users) => res.send(users))
-    .catch(() => res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' }));
 };
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь не найден' });
+        throw new NotFound('Карточка не найдена');
       }
       return res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Произошла ошибка' });
-      }
-      return res.status(constants.INTERNAL_ERROR).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -84,6 +102,7 @@ const updateAvatar = (req, res) => {
     });
 };
 module.exports = {
+  login,
   getUsers,
   getUser,
   createUser,

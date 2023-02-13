@@ -15,9 +15,16 @@
   "description": "[# express-mesto-gha] https://github.com/AlekseevFr/express-mesto-gha.git",
   "main": "app.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",
+    "celebrate": "^15.0.1",
     "express": "^4.17.1",
-    "mongoose": "^5.12.2"
+    "install": "^0.13.0",
+    "joi": "^17.7.1",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^5.12.2",
+    "npm": "^9.4.1",
+    "validator": "^13.9.0"
   },
   "repository": {
     "type": "git",

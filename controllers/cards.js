@@ -1,5 +1,7 @@
 const { constants } = require('http2');
 const Card = require('../models/card');
+const { NotFound } = require('../errors/NotFound');
+const { UnAuthorized } = require('../errors/UnAuthorized');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -22,23 +24,29 @@ const createCard = (req, res) => {
       }
     });
 };
-const deleteCard = (req, res) => {
+const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
+
+  Card.findById(cardId).populate('owner')
     .then((card) => {
       if (!card) {
-        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемая карточка не найдена' });
+        throw new NotFound('Карточка не найдена');
       }
-      return res.send(card);
+
+      const ownerId = card.owner.id;
+      const userId = req.user._id;
+
+      if (ownerId !== userId) {
+        throw new UnAuthorized('Удалить можно только свою карточку');
+      }
+
+      return Card.findByIdAndRemove(cardId).then((resp) => res.send(resp));
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Произошла ошибка' });
-      }
-      return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
@@ -47,15 +55,12 @@ const likeCard = (req, res) => {
     .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
-        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемая карточка не найдена' });
+        throw new NotFound('Карточка не найдена');
       }
       return res.status(constants.HTTP_STATUS_OK).send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Переданы некорректные данные карточки.' });
-      }
-      return res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка на сервере.' });
+      next(err);
     });
 };
 
