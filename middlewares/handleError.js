@@ -1,4 +1,4 @@
-function handleError(err, req, res) {
+function handleError(err, req, res, next) {
   const { statusCode = 500 } = err;
   let { message } = err;
 
@@ -7,6 +7,7 @@ function handleError(err, req, res) {
   }
 
   res.status(statusCode).send({ message });
+  next();
 }
 
 module.exports = { handleError };
