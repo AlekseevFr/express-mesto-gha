@@ -21,8 +21,8 @@ module.exports = (req, res, next) => {
       );
     }
     req.user = payload;
+    next();
   } catch (err) {
     next(err);
   }
-  return next();
 };
