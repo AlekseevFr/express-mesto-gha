@@ -44,7 +44,7 @@ const createUser = (req, res) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then(({ password: p, ...user }) => res.send(user))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
