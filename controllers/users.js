@@ -43,8 +43,11 @@ const createUser = (req, res) => {
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
-    }))
-    .then((user) => res.send(user))
+    })).then((user) => {
+      const person = user.toObject();
+      delete person.password;
+      res.send(person);
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
