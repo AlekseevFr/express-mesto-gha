@@ -50,8 +50,8 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.code === 11000) {
-        const customError = new Conflict('Пользователь уже зарегестрирован');
-        next(customError);
+        const conflictError = new Conflict('Пользователь уже зарегестрирован');
+        next(conflictError);
       } else {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
