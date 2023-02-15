@@ -36,18 +36,10 @@ const getUser = (req, res, next) => {
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  User.findOne({ email })
-
-    .then((user) => {
-      if (user) {
-        throw new Conflict('Пользователь с таким email уже существует');
-      }
-    });
-
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
@@ -57,12 +49,11 @@ const createUser = (req, res) => {
       res.send(person);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
-          message: 'Ошибка данных',
-        });
+      if (err.code === 11000) {
+        const customError = new Conflict('Пользователь уже зарегестрирован');
+        next(customError);
       } else {
-        res.status(Conflict).send({ message: 'Произошла ошибка' });
+        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
 };
