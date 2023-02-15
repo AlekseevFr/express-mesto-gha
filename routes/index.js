@@ -9,29 +9,30 @@ const { login, createUser } = require('../controllers/users');
 
 router.all('*', express.json());
 
-router.post(
-  '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
-      name: Joi.string().min(2).max(30),
-      about: Joi.string().min(2).max(30),
-      avatar: Joi.string().regex(/https?:\/\/(www)?[0-9a-z\-._~:/?#[\]@!$&'()*+,;=]+#?$/i),
-    }),
+router.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30).required()
+      .default('Жак-Ив Кусто'),
+    about: Joi.string().min(2).max(30).required()
+      .default('Исследователь'),
+    avatar: Joi.string().regex(/^https?:\/\/(?:w{3}\.)*\S*#?$/i)
+      .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
   }),
-  createUser,
-);
-router.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
-    }),
+}), createUser);
+router.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+    name: Joi.string().min(2).max(30).required()
+      .default('Жак-Ив Кусто'),
+    about: Joi.string().min(2).max(30).required()
+      .default('Исследователь'),
+    avatar: Joi.string().regex(/^https?:\/\/(?:w{3}\.)*\S*#?$/i)
+      .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
   }),
-  login,
-);
+}), login);
 
 router.all('*', auth);
 
