@@ -62,7 +62,7 @@ const createUser = (req, res) => {
           message: 'Ошибка данных',
         });
       } else {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        res.status(Conflict).send({ message: 'Произошла ошибка' });
       }
     });
 };
