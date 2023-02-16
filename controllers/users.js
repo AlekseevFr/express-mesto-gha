@@ -5,9 +5,10 @@ const User = require('../models/user');
 const { NotFound } = require('../errors/NotFound');
 const { Conflict } = require('../errors/Conflict');
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
   const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
+  console.log('login', email, password);
+  User.findUserByCredentials(email, password)
     .then((user) => {
       console.log(user);
       const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
@@ -15,6 +16,7 @@ const login = (req, res, next) => {
     })
 
     .catch((err) => {
+      console.log('err', err);
       next(err);
     });
 };
