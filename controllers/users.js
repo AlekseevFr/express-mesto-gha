@@ -2,9 +2,8 @@ const { constants } = require('http2');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-
+const { NotFound } = require('../errors/NotFound');
 const { Conflict } = require('../errors/Conflict');
-const { UnAuthorized } = require('../errors/UnAuthorized');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -29,7 +28,7 @@ const getUser = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        throw new UnAuthorized('Необходима авторизация');
+        throw new NotFound('Карточка не найдена');
       }
       return res.send(user);
     })
@@ -60,6 +59,7 @@ const createUser = (req, res, next) => {
     });
 };
 const updateUser = (req, res) => {
+  console.log('1', req.body, req.user);
   const userName = req.body.name;
   const userInfo = req.body.about;
   const userId = req.user._id;
@@ -69,17 +69,20 @@ const updateUser = (req, res) => {
     { new: true, runValidators: true },
   )
     .then((user) => {
+      console.log('user', user);
       if (!user) {
         return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
       }
       return res.status(constants.HTTP_STATUS_OK).send({ data: user });
     })
     .catch((err) => {
+      console.log('err', err);
       if (err.name === 'ValidationError') {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
           message: 'Ошибка данных',
         });
       } else {
+        console.log('err-2', err);
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
