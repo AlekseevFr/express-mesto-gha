@@ -1,7 +1,7 @@
 function handleError(err, req, res, next) {
   const { statusCode = 500 } = err;
   let { message } = err;
-
+  console.log(err);
   if (statusCode === 500) {
     message = 'Ошибка на сервере';
   }

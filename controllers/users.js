@@ -7,9 +7,10 @@ const { Conflict } = require('../errors/Conflict');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  return User.findUserByCredentials(email, password).select('+password')
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
+      const userWithPass = user.select('+password');
+      const token = jwt.sign({ _id: userWithPass._id }, 'super-strong-secret', { expiresIn: '7d' });
       res.status(constants.HTTP_STATUS_OK).send({ token });
     })
 
