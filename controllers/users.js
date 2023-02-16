@@ -2,8 +2,9 @@ const { constants } = require('http2');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { NotFound } = require('../errors/NotFound');
+
 const { Conflict } = require('../errors/Conflict');
+const { UnAuthorized } = require('../errors/UnAuthorized');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -28,7 +29,7 @@ const getUser = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        throw new NotFound('Карточка не найдена');
+        throw new UnAuthorized('Необходима авторизация');
       }
       return res.send(user);
     })
