@@ -22,6 +22,7 @@ module.exports = (req, res, next) => {
       // next(error);
       throw new UnAuthorized('Необходима авторизация');
     }
+    console.log('payload', payload, token, authorization);
     req.user = payload;
     next();
   } catch (err) {

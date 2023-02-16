@@ -9,8 +9,8 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const userWithPass = user.select('+password');
-      const token = jwt.sign({ _id: userWithPass._id }, 'super-strong-secret', { expiresIn: '7d' });
+      console.log(user);
+      const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
       res.status(constants.HTTP_STATUS_OK).send({ token });
     })
 
