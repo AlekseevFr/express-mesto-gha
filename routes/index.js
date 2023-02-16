@@ -32,11 +32,10 @@ router.post(
   }),
   login,
 );
-
-router.all('*', auth);
-
 router.use('/users', users);
 router.use('/cards', cards);
+
+router.all('*', auth);
 
 router.all('*', (req, res, next) => {
   next(new NotFound('Запрос не найден'));
