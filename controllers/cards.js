@@ -1,7 +1,7 @@
 const { constants } = require('http2');
 const Card = require('../models/card');
 const { NotFound } = require('../errors/NotFound');
-const { UnAuthorized } = require('../errors/UnAuthorized');
+const { Forbidden } = require('../errors/Forbidden');
 
 const getCards = (req, res) => {
   Card.find({})
@@ -37,7 +37,7 @@ const deleteCard = (req, res, next) => {
       const userId = req.user._id;
 
       if (ownerId !== userId) {
-        throw new UnAuthorized('Удалить можно только свою карточку');
+        throw new Forbidden('Удалить можно только свою карточку');
       }
 
       return Card.findByIdAndRemove(cardId).then((resp) => res.send(resp));

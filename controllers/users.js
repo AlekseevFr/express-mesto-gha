@@ -7,16 +7,12 @@ const { Conflict } = require('../errors/Conflict');
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log('login', email, password);
   User.findUserByCredentials(email, password)
     .then((user) => {
-      console.log(user);
       const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
       res.status(constants.HTTP_STATUS_OK).send({ token });
     })
-
     .catch((err) => {
-      console.log('err', err);
       next(err);
     });
 };
@@ -61,7 +57,6 @@ const createUser = (req, res, next) => {
     });
 };
 const updateUser = (req, res) => {
-  console.log('1', req.body, req.user);
   const userName = req.body.name;
   const userInfo = req.body.about;
   const userId = req.user._id;
@@ -71,20 +66,17 @@ const updateUser = (req, res) => {
     { new: true, runValidators: true },
   )
     .then((user) => {
-      console.log('user', user);
       if (!user) {
         return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
       }
       return res.status(constants.HTTP_STATUS_OK).send({ data: user });
     })
     .catch((err) => {
-      console.log('err', err);
       if (err.name === 'ValidationError') {
         res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
           message: 'Ошибка данных',
         });
       } else {
-        console.log('err-2', err);
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
     });
