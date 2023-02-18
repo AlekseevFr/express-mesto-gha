@@ -64,7 +64,7 @@ const createUser = (req, res, next) => {
       }
     });
 };
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const userName = req.body.name;
   const userInfo = req.body.about;
   const userId = req.user._id;
@@ -75,17 +75,16 @@ const updateUser = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        throw new NotFound('Пользователь не найден');
+        next(new NotFound('Пользователь не найден'));
       }
       return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
-          message: 'Ошибка данных',
-        });
+        next(new BadRequest('Некорректные данные карточки'));
       } else {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        const InternalError = new Internal('Ошибка сервера');
+        next(InternalError);
       }
     });
 };
