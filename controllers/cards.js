@@ -68,7 +68,7 @@ const dislikeCard = (req, res, next) => {
     .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
-        next(new NotFound('Карточка не найдена'));
+        return next(new NotFound('Карточка не найдена'));
       }
       return res.send(card);
     })
