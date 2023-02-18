@@ -26,7 +26,7 @@ const getUser = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        next(new NotFound('Пользователь не найден'));
+        return next(new NotFound('Пользователь не найден'));
       }
       return res.send(user);
     })
@@ -49,9 +49,6 @@ const createUser = (req, res, next) => {
       if (err.code === 11000) {
         const conflictError = new Conflict('Пользователь уже зарегестрирован');
         next(conflictError);
-      } else {
-        const InternalError = new Internal('Ошибка сервера');
-        next(InternalError);
       }
       if (err.name === 'ValidationError') {
         next(new BadRequest('Некорректные данные карточки'));
@@ -71,7 +68,7 @@ const updateUser = (req, res, next) => {
   )
     .then((user) => {
       if (!user) {
-        next(new NotFound('Пользователь не найден'));
+        return next(new NotFound('Пользователь не найден'));
       }
       return res.send(user);
     })
@@ -91,7 +88,7 @@ const updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(userId, { avatar: userAvatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        next(new NotFound('Пользователь не найден'));
+        return next(new NotFound('Пользователь не найден'));
       }
       return res.send(user);
     })

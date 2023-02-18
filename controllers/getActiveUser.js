@@ -7,7 +7,7 @@ async function getActiveUser(req, res, next) {
     const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
-      next(new NotFound('Пользователь не найден'));
+      return next(new NotFound('Пользователь не найден'));
     }
     return res.send(user);
   } catch (err) {

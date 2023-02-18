@@ -29,14 +29,14 @@ const deleteCard = (req, res, next) => {
   Card.findById(cardId).populate('owner')
     .then((card) => {
       if (!card) {
-        next(new NotFound('Карточка не найдена'));
+        return next(new NotFound('Карточка не найдена'));
       }
 
       const ownerId = card.owner.id;
       const userId = req.user._id;
 
       if (ownerId !== userId) {
-        next(new Forbidden('Удалить можно только свою карточку'));
+        return next(new Forbidden('Удалить можно только свою карточку'));
       }
 
       return Card.findByIdAndRemove(cardId).then((resp) => res.send(resp));
@@ -52,7 +52,7 @@ const likeCard = (req, res, next) => {
     .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
-        next(new NotFound('Карточка не найдена'));
+        return next(new NotFound('Карточка не найдена'));
       }
       return res.status(constants.HTTP_STATUS_OK).send({ data: card });
     })
@@ -77,7 +77,7 @@ const dislikeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new BadRequest('Некорректные данные карточки'));
       }
-      return next(new NotFound('Пользователь не найден'));
+      return next(err);
     });
 };
 
