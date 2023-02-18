@@ -3,7 +3,7 @@ const User = require('../models/user');
 
 async function getActiveUser(req, res) {
   try {
-    const userId = req.params.userId || req.user._id;
+    const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь не найден' });
