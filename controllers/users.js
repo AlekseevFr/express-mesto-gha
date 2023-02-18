@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { NotFound } = require('../errors/NotFound');
 const { Conflict } = require('../errors/Conflict');
+const { BadRequest } = require('../errors/BadRequest');
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -16,10 +17,10 @@ const login = async (req, res, next) => {
       next(err);
     });
 };
-const getUsers = (req, res) => {
-  User.find()
-    .then((users) => res.send(users))
-    .catch(() => res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' }));
+const getUsers = (req, res, next) => {
+  User.find({})
+    .then((users) => res.status(constants.HTTP_STATUS_OK).send({ data: users }))
+    .catch(next);
 };
 const getUser = (req, res, next) => {
   const { userId } = req.params;
@@ -48,6 +49,11 @@ const createUser = (req, res, next) => {
       res.send(person);
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Некорректные данные карточки'));
+      } else {
+        next(err);
+      }
       if (err.code === 11000) {
         const conflictError = new Conflict('Пользователь уже зарегестрирован');
         next(conflictError);
@@ -94,9 +100,7 @@ const updateAvatar = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(constants.HTTP_STATUS_BAD_REQUEST).send({
-          message: 'Ошибка данных',
-        });
+        throw new BadRequest('Некорректные данные карточки');
       } else {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
       }
