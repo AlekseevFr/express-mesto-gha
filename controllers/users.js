@@ -28,7 +28,7 @@ const getUser = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        throw new NotFound('Пользователь не найден');
+        next(new NotFound('Пользователь не найден'));
       }
       return res.send(user);
     })
@@ -89,13 +89,13 @@ const updateUser = (req, res, next) => {
     });
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const userAvatar = req.body.avatar;
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { avatar: userAvatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
+        next(new NotFound('Пользователь не найден'));
       }
       return res.send(user);
     })
@@ -103,7 +103,8 @@ const updateAvatar = (req, res) => {
       if (err.name === 'ValidationError') {
         throw new BadRequest('Некорректные данные карточки');
       } else {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        const InternalError = new Internal('Ошибка сервера');
+        next(InternalError);
       }
     });
 };
