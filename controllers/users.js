@@ -14,9 +14,7 @@ const login = async (req, res, next) => {
       const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
       res.status(constants.HTTP_STATUS_OK).send({ token });
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 const getUsers = (req, res, next) => {
   User.find({})
@@ -32,9 +30,7 @@ const getUser = (req, res, next) => {
       }
       return res.send(user);
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
 const createUser = (req, res, next) => {
