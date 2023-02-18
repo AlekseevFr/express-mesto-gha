@@ -5,6 +5,7 @@ const User = require('../models/user');
 const { NotFound } = require('../errors/NotFound');
 const { Conflict } = require('../errors/Conflict');
 const { BadRequest } = require('../errors/BadRequest');
+const { Internal } = require('../errors/Internal');
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -53,7 +54,8 @@ const createUser = (req, res, next) => {
         const conflictError = new Conflict('Пользователь уже зарегестрирован');
         next(conflictError);
       } else {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        const InternalError = new Internal('Ошибка сервера');
+        next(InternalError);
       }
       if (err.name === 'ValidationError') {
         next(new BadRequest('Некорректные данные карточки'));

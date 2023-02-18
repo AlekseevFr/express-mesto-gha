@@ -4,4 +4,4 @@ class Internal extends Error {
     this.statusCode = 500;
   }
 }
-module.exports = Internal;
+module.exports = { Internal };
