@@ -28,7 +28,7 @@ const getUser = (req, res, next) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        throw new NotFound('Карточка не найдена');
+        throw new NotFound('Пользователь не найден');
       }
       return res.send(user);
     })
@@ -75,9 +75,9 @@ const updateUser = (req, res) => {
   )
     .then((user) => {
       if (!user) {
-        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемый пользователь не найден' });
+        throw new NotFound('Пользователь не найден');
       }
-      return res.status(constants.HTTP_STATUS_OK).send({ data: user });
+      return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
