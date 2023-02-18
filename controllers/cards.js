@@ -36,7 +36,7 @@ const deleteCard = (req, res, next) => {
       const userId = req.user._id;
 
       if (ownerId !== userId) {
-        next(new Forbidden('Удалить можно только свою карточку'));
+        throw new Forbidden('Удалить можно только свою карточку');
       }
 
       return Card.findByIdAndRemove(cardId).then((resp) => res.send(resp));
@@ -75,9 +75,9 @@ const dislikeCard = (req, res, next) => {
 
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest('Некорректные данные карточки'));
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Переданы некорректные данные карточки.' });
       }
-      next(new NotFound('Пользователь не найден'));
+      return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Произошла ошибка' });
     });
 };
 
