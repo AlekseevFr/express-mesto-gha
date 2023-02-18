@@ -1,17 +1,17 @@
-const { constants } = require('http2');
+const { Internal } = require('../errors/Internal');
+const { NotFound } = require('../errors/NotFound');
 const User = require('../models/user');
 
-async function getActiveUser(req, res) {
+async function getActiveUser(req, res, next) {
   try {
     const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь не найден' });
+      next(new NotFound('Пользователь не найден'));
     }
-
     return res.send(user);
   } catch (err) {
-    return res.status(constants.INTERNAL_ERROR).send({ message: 'Произошла ошибка' });
+    return next(new Internal('Ошибка сервера'));
   }
 }
 
