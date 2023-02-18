@@ -49,16 +49,16 @@ const createUser = (req, res, next) => {
       res.send(person);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new BadRequest('Некорректные данные карточки'));
-      } else {
-        next(err);
-      }
       if (err.code === 11000) {
         const conflictError = new Conflict('Пользователь уже зарегестрирован');
         next(conflictError);
       } else {
         res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+      }
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Некорректные данные карточки'));
+      } else {
+        next(err);
       }
     });
 };
