@@ -97,9 +97,9 @@ const updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequest('Некорректные данные карточки');
+        next(new BadRequest('Некорректные данные карточки'));
       } else {
-        res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        next(new Internal('Ошибка сервера'));
       }
     });
 };
