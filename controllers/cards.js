@@ -75,9 +75,9 @@ const dislikeCard = (req, res, next) => {
 
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Переданы некорректные данные карточки.' });
+        next(new BadRequest('Некорректные данные карточки'));
       }
-      return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Произошла ошибка' });
+      return next(new NotFound('Пользователь не найден'));
     });
 };
 
