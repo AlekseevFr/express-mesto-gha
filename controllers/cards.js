@@ -52,14 +52,14 @@ const likeCard = (req, res, next) => {
     .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
-        next(new NotFound('Карточка не найдена'));
+        throw new NotFound('Карточка не найдена');
       }
       return res.status(constants.HTTP_STATUS_OK).send({ data: card });
     })
     .catch(next);
 };
 
-const dislikeCard = (req, res, next) => {
+const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -68,7 +68,7 @@ const dislikeCard = (req, res, next) => {
     .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
-        next(new NotFound('Пользователь не найден'));
+        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемая карточка не найдена' });
       }
       return res.send(card);
     })
