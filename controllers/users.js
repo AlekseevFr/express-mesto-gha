@@ -17,10 +17,10 @@ const login = async (req, res, next) => {
       next(err);
     });
 };
-const getUsers = (req, res) => {
-  User.find()
-    .then((users) => res.send(users))
-    .catch(() => res.status(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' }));
+const getUsers = (req, res, next) => {
+  User.find({})
+    .then((users) => res.status(constants.HTTP_STATUS_OK).send({ data: users }))
+    .catch(next);
 };
 const getUser = (req, res, next) => {
   const { userId } = req.params;
