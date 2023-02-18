@@ -30,7 +30,6 @@ const getUser = (req, res, next) => {
       if (!user) {
         next(new NotFound('Пользователь не найден'));
       }
-      return res.send(user);
     })
     .catch((err) => {
       next(err);
@@ -47,7 +46,6 @@ const createUser = (req, res, next) => {
     })).then((user) => {
       const person = user.toObject();
       delete person.password;
-      res.send(person);
     })
     .catch((err) => {
       if (err.code === 11000) {
@@ -97,7 +95,6 @@ const updateAvatar = (req, res, next) => {
       if (!user) {
         next(new NotFound('Пользователь не найден'));
       }
-      return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
