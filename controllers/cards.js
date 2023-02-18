@@ -36,7 +36,7 @@ const deleteCard = (req, res, next) => {
       const userId = req.user._id;
 
       if (ownerId !== userId) {
-        throw new Forbidden('Удалить можно только свою карточку');
+        next(new Forbidden('Удалить можно только свою карточку'));
       }
 
       return Card.findByIdAndRemove(cardId).then((resp) => res.send(resp));
