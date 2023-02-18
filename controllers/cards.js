@@ -59,7 +59,7 @@ const likeCard = (req, res, next) => {
     .catch(next);
 };
 
-const dislikeCard = (req, res, next) => {
+const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } },
@@ -68,16 +68,16 @@ const dislikeCard = (req, res, next) => {
     .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
-        next(new NotFound('Карточка не найдена'));
+        return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Запрашиваемая карточка не найдена' });
       }
       return res.send(card);
     })
 
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequest('Некорректные данные карточки'));
+        res.status(constants.HTTP_STATUS_BAD_REQUEST).send({ message: 'Переданы некорректные данные карточки.' });
       }
-      next(new NotFound('Карточка не найдена'));
+      return res.status(constants.HTTP_STATUS_NOT_FOUND).send({ message: 'Произошла ошибка' });
     });
 };
 
