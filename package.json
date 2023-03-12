@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "scripts": {
     "lint": "eslint . --ext js,jsx,ts,tsx --fix",
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node server.js",
+    "dev": "nodemon app.js",
+    "test": "jest"
   },
   "devDependencies": {
     "eslint": "^8.32.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.4",
-    "nodemon": "^2.0.20"
+    "jest": "^29.4.3",
+    "nodemon": "^2.0.20",
+    "supertest": "^6.3.3"
   },
   "description": "[# express-mesto-gha] https://github.com/AlekseevFr/express-mesto-gha.git",
   "main": "app.js",
